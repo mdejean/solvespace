@@ -467,6 +467,29 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
     }
 }
 
+void GraphicsWindow::Cancel() {
+    if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT) {
+        hRequest r = pending.request;
+        SK.request.ClearTags();
+        SK.constraint.ClearTags();
+
+        //remove coincident constraint to previous segment (if exists)
+        for (Constraint* c = SK.constraint.First(); c; c = SK.constraint.NextAfter(c)) {
+            if (c->ptA.v == r.entity(1).v || c->ptB.v == r.entity(1).v) {
+                SK.constraint.Tag(c->h, 1);
+            }
+        }
+
+        SK.request.Tag(r, 1);
+
+        SK.constraint.RemoveTagged();
+        DeleteTaggedRequests();
+
+        InvalidateGraphics();
+    }
+    ClearPending();
+}
+
 void GraphicsWindow::ClearPending() {
     pending.points.Clear();
     pending.requests.Clear();
@@ -536,7 +559,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
         // Special case; use a right click to stop drawing lines, since
         // a left click would draw another one. This is quicker and more
         // intuitive than hitting escape. Likewise for new cubic segments.
-        ClearPending();
+        Cancel();
         return;
     }
 

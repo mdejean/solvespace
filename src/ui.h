@@ -866,6 +866,7 @@ public:
     void StartDraggingBySelection();
     void UpdateDraggedNum(Vector *pos, double mx, double my);
     void UpdateDraggedPoint(hEntity hp, double mx, double my);
+    void Cancel();
 
     void DrawEntities(Canvas *canvas, bool persistent);
     void DrawPersistent(Canvas *canvas);

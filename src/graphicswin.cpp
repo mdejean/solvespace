@@ -790,6 +790,7 @@ void GraphicsWindow::MenuEdit(Command id) {
                     }
                 }
             }
+            SS.GW.Cancel();
             SS.GW.ClearSuper();
             SS.TW.HideEditControl();
             SS.nakedEdges.Clear();
