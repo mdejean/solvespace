@@ -73,11 +73,6 @@ include_directories(
     ${FREETYPE_INCLUDE_DIRS}
     ${CAIRO_INCLUDE_DIRS})
 
-if(SPACEWARE_FOUND)
-    include_directories(
-        ${SPACEWARE_INCLUDE_DIR})
-endif()
-
 if(OPENGL STREQUAL 2)
     set(gl_SOURCES
         render/gl2shader.cpp
@@ -95,8 +90,7 @@ if(WIN32)
         ${gl_SOURCES})
 
     set(platform_LIBRARIES
-        comctl32
-        ${SPACEWARE_LIBRARIES})
+        comctl32)
 elseif(APPLE)
     add_compile_options(
         -fobjc-arc)
@@ -115,8 +109,7 @@ elseif(HAVE_GTK2 OR HAVE_GTK3)
         render/rendergl.cpp
         ${gl_SOURCES})
 
-    set(platform_LIBRARIES
-        ${SPACEWARE_LIBRARIES})
+    set(platform_LIBRARIES)
 
     foreach(pkg_config_lib GTKMM JSONC FONTCONFIG)
         include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
@@ -222,9 +215,13 @@ target_link_libraries(solvespace
     ${platform_LIBRARIES}
     ${COVERAGE_LIBRARY})
 
+if(SPACEWARE_FOUND)
+    target_link_libraries(solvespace SpaceWare)
+endif()
+
 if(MSVC)
     set_target_properties(solvespace PROPERTIES
-        LINK_FLAGS "/MANIFEST:NO /SAFESEH:NO /INCREMENTAL:NO /OPT:REF")
+        LINK_FLAGS "/MANIFEST:NO /INCREMENTAL:NO /OPT:REF")
 endif()
 
 # solvespace headless library
