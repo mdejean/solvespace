@@ -154,14 +154,7 @@ if(WIN32)
     set(CAIRO_INCLUDE_DIRS      ${CMAKE_SOURCE_DIR}/extlib/cairo/src)
     list(APPEND CAIRO_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extlib/cairo/src)
 
-    if(NOT MINGW)
-        message(STATUS "Using prebuilt SpaceWare")
-        set(SPACEWARE_FOUND TRUE)
-        set(SPACEWARE_INCLUDE_DIR
-            "${CMAKE_SOURCE_DIR}/extlib/si")
-        set(SPACEWARE_LIBRARIES
-            "${CMAKE_SOURCE_DIR}/extlib/si/siapp.lib")
-    endif()
+    find_package(SpaceWare)
 elseif(APPLE)
     set(CMAKE_FIND_FRAMEWORK LAST)
 
