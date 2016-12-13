@@ -211,10 +211,13 @@ add_dependencies(solvespace
 
 target_link_libraries(solvespace
     solvespace-core
-    SpaceWare
     ${OPENGL_LIBRARIES}
     ${platform_LIBRARIES}
     ${COVERAGE_LIBRARY})
+
+if(SPACEWARE_FOUND)
+    target_link_libraries(solvespace SpaceWare)
+endif()
 
 if(MSVC)
     set_target_properties(solvespace PROPERTIES
