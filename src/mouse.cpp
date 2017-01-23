@@ -468,19 +468,35 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
 }
 
 void GraphicsWindow::Cancel() {
-    if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT) {
-        hRequest r = pending.request;
+    if(pending.operation == Pending::DRAGGING_NEW_POINT ||
+       pending.operation == Pending::DRAGGING_NEW_LINE_POINT ||
+       pending.operation == Pending::DRAGGING_NEW_CUBIC_POINT ||
+       pending.operation == Pending::DRAGGING_NEW_ARC_POINT ||
+       pending.operation == Pending::DRAGGING_NEW_RADIUS) {
         SK.request.ClearTags();
         SK.constraint.ClearTags();
+        if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT ||
+            pending.operation == Pending::DRAGGING_NEW_CUBIC_POINT) {
+            auto& r = pending.request;
+            for (Constraint* c = SK.constraint.First(); c; c = SK.constraint.NextAfter(c)) {
+                if (c->ptA.v == r.entity(1).v || c->ptB.v == r.entity(1).v) {
+                    SK.constraint.Tag(c->h, 1);
+                }
+            }
 
-        //remove coincident constraint to previous segment (if exists)
-        for (Constraint* c = SK.constraint.First(); c; c = SK.constraint.NextAfter(c)) {
-            if (c->ptA.v == r.entity(1).v || c->ptB.v == r.entity(1).v) {
-                SK.constraint.Tag(c->h, 1);
+            SK.request.Tag(r, 1);
+        } else {
+            for (auto&& r : pending.requests) {
+
+                for (Constraint* c = SK.constraint.First(); c; c = SK.constraint.NextAfter(c)) {
+                    if (c->ptA.v == r.entity(1).v || c->ptB.v == r.entity(1).v) {
+                        SK.constraint.Tag(c->h, 1);
+                    }
+                }
+
+                SK.request.Tag(r, 1);
             }
         }
-
-        SK.request.Tag(r, 1);
 
         SK.constraint.RemoveTagged();
         DeleteTaggedRequests();
