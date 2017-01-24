@@ -336,10 +336,6 @@ GraphicsWindow::Selection GraphicsWindow::ChooseFromHoverToSelect() {
     for(const Hover &hov : hoverList) {
         hGroup hg = {};
         if(hov.selection.entity.v != 0) {
-            hEntity he = hov.selection.entity;
-            if(he.isFromRequest() && IsFromPending(he.request())) {
-                continue;
-            }
             hg = SK.GetEntity(hov.selection.entity)->group;
         } else if(hov.selection.constraint.v != 0) {
             hg = SK.GetConstraint(hov.selection.constraint)->group;
@@ -399,7 +395,7 @@ void GraphicsWindow::HitTestMakeSelection(Point2d mp) {
         if(!e.IsVisible()) continue;
 
         // Don't hover whatever's being dragged.
-        if(e.h.request().v == pending.point.request().v) {
+        if(IsFromPending(e.h.request())) {
             // The one exception is when we're creating a new cubic; we
             // want to be able to hover the first point, because that's
             // how we turn it into a periodic spline.
@@ -885,26 +881,34 @@ void GraphicsWindow::Paint() {
                           /*outlineColor=*/Style::Color(Style::HOVERED));
     }
 
+    // If we've had a screenshot requested, take it now, before the UI is overlaid.
+    if(!SS.screenshotFile.empty()) {
+        FILE *f = ssfopen(SS.screenshotFile, "wb");
+        if(!f || !canvas->ReadFrame()->WritePng(f, /*flip=*/true)) {
+            Error("Couldn't write to '%s'", SS.screenshotFile.c_str());
+        }
+        if(f) fclose(f);
+        SS.screenshotFile.clear();
+    }
+
     // And finally the toolbar.
     if(SS.showToolbar) {
         canvas->SetCamera(camera);
         ToolbarDraw(&uiCanvas);
     }
 
-    // If we display UI elements, also display an fps counter.
-    if(SS.showToolbar) {
-        RgbaColor renderTimeColor;
-        if(1000 / renderTime.count() < 60) {
-            // We aim for a steady 60fps; draw the counter in red when we're slower.
-            renderTimeColor = { 255, 0, 0, 255 };
-        } else {
-            renderTimeColor = { 255, 255, 255, 255 };
-        }
-        uiCanvas.DrawBitmapText(ssprintf("rendered in %ld ms (%ld 1/s)",
-                                         (long)renderTime.count(),
-                                         (long)(1000/renderTime.count())),
-                                5, 5, renderTimeColor);
+    // Also display an fps counter.
+    RgbaColor renderTimeColor;
+    if(1000 / renderTime.count() < 60) {
+        // We aim for a steady 60fps; draw the counter in red when we're slower.
+        renderTimeColor = { 255, 0, 0, 255 };
+    } else {
+        renderTimeColor = { 255, 255, 255, 255 };
     }
+    uiCanvas.DrawBitmapText(ssprintf("rendered in %ld ms (%ld 1/s)",
+                                     (long)renderTime.count(),
+                                     (long)(1000/renderTime.count())),
+                            5, 5, renderTimeColor);
 
     canvas->FlushFrame();
     canvas->Clear();

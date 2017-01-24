@@ -530,6 +530,14 @@ void GraphicsWindow::AddToPending(hRequest r) {
     pending.requests.Add(&r);
 }
 
+void GraphicsWindow::ReplacePending(hRequest before, hRequest after) {
+    for(auto &req : pending.requests) {
+        if(req.v == before.v) {
+            req.v = after.v;
+        }
+    }
+}
+
 void GraphicsWindow::MouseMiddleOrRightDown(double x, double y) {
     if(GraphicsEditControlIsVisible()) return;
 
@@ -1139,6 +1147,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my) {
                         break;
                     }
                     hr = AddRequest(Request::Type::TTF_TEXT);
+                    AddToPending(hr);
                     Request *r = SK.GetRequest(hr);
                     r->str = "Abc";
                     r->font = "arial.ttf";
@@ -1257,6 +1266,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my) {
 
             // Create a new line segment, so that we continue drawing.
             hRequest hr = AddRequest(Request::Type::LINE_SEGMENT);
+            ReplacePending(pending.request, hr);
             SK.GetRequest(hr)->construction = SK.GetRequest(pending.request)->construction;
             SK.GetEntity(hr.entity(1))->PointForceTo(v);
             // Displace the second point of the new line segment slightly,
