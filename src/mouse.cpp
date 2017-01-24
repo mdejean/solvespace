@@ -475,8 +475,7 @@ void GraphicsWindow::Cancel() {
        pending.operation == Pending::DRAGGING_NEW_RADIUS) {
         SK.request.ClearTags();
         SK.constraint.ClearTags();
-        if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT ||
-            pending.operation == Pending::DRAGGING_NEW_CUBIC_POINT) {
+        if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT) {
             auto& r = pending.request;
             for (Constraint* c = SK.constraint.First(); c; c = SK.constraint.NextAfter(c)) {
                 if (c->ptA.v == r.entity(1).v || c->ptB.v == r.entity(1).v) {
@@ -485,6 +484,13 @@ void GraphicsWindow::Cancel() {
             }
 
             SK.request.Tag(r, 1);
+        } else if (pending.operation == Pending::DRAGGING_NEW_CUBIC_POINT) {
+            Request* r = SK.GetRequest(pending.point.request());
+            if (r->extraPoints == 0) {
+                SK.request.Tag(pending.request, 1);
+            } else {
+                r->extraPoints--;
+            }
         } else {
             for (auto&& r : pending.requests) {
 
