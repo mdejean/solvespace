@@ -459,7 +459,7 @@ done:
 }
 
 void TextWindow::Show() {
-    if(SS.GW.pending.operation == GraphicsWindow::Pending::NONE) SS.GW.ClearPending();
+    if(SS.GW.pending.operation == Pending::NONE) SS.GW.ClearPending();
 
     SS.GW.GroupSelection();
     auto const &gs = SS.GW.gs;

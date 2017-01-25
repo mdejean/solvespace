@@ -574,6 +574,23 @@ public:
     void EditControlDone(const char *s);
 };
 
+// Operations that must be completed by doing something with the mouse
+// are noted here.
+enum class Pending : uint32_t {
+    NONE                        = 0,
+    COMMAND                     = 1,
+    DRAGGING_POINTS             = 2,
+    DRAGGING_NEW_POINT          = 3,
+    DRAGGING_NEW_LINE_POINT     = 4,
+    DRAGGING_NEW_CUBIC_POINT    = 5,
+    DRAGGING_NEW_ARC_POINT      = 6,
+    DRAGGING_CONSTRAINT         = 7,
+    DRAGGING_RADIUS             = 8,
+    DRAGGING_NORMAL             = 9,
+    DRAGGING_NEW_RADIUS         = 10,
+    DRAGGING_MARQUEE            = 11,
+};
+
 class GraphicsWindow {
 public:
     void Init();
@@ -683,26 +700,12 @@ public:
     hEntity ActiveWorkplane();
     void ForceTextWindowShown();
 
-    // Operations that must be completed by doing something with the mouse
-    // are noted here.
-    enum class Pending : uint32_t {
-        NONE                        = 0,
-        COMMAND                     = 1,
-        DRAGGING_POINTS             = 2,
-        DRAGGING_NEW_POINT          = 3,
-        DRAGGING_NEW_LINE_POINT     = 4,
-        DRAGGING_NEW_CUBIC_POINT    = 5,
-        DRAGGING_NEW_ARC_POINT      = 6,
-        DRAGGING_CONSTRAINT         = 7,
-        DRAGGING_RADIUS             = 8,
-        DRAGGING_NORMAL             = 9,
-        DRAGGING_NEW_RADIUS         = 10,
-        DRAGGING_MARQUEE            = 11,
-    };
+    CommandRequest command_request; //fixme
 
     struct {
         Pending              operation;
         Command              command;
+        CommandBase*         command_c; //FIXME: remove all references to command and rename this?
 
         hRequest             request;
         hEntity              point;

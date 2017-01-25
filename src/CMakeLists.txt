@@ -139,6 +139,7 @@ set(solvespace_core_HEADERS
     sketch.h
     solvespace.h
     ui.h
+    command_request.h
     render/render.h
     render/gl2shader.h
     srf/surface.h)
@@ -167,6 +168,7 @@ set(solvespace_core_SOURCES
     mesh.cpp
     modify.cpp
     mouse.cpp
+    command_request.cpp
     polyline.cpp
     polygon.cpp
     resource.cpp

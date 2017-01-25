@@ -1019,24 +1019,6 @@ void GraphicsWindow::MenuRequest(Command id) {
             }
             break;
 
-        case Command::ARC: s = _("click point on arc (draws anti-clockwise)"); goto c;
-        case Command::DATUM_POINT: s = _("click to place datum point"); goto c;
-        case Command::LINE_SEGMENT: s = _("click first point of line segment"); goto c;
-        case Command::CONSTR_SEGMENT:
-            s = _("click first point of construction line segment"); goto c;
-        case Command::CUBIC: s = _("click first point of cubic segment"); goto c;
-        case Command::CIRCLE: s = _("click center of circle"); goto c;
-        case Command::WORKPLANE: s = _("click origin of workplane"); goto c;
-        case Command::RECTANGLE: s = _("click one corner of rectangle"); goto c;
-        case Command::TTF_TEXT: s = _("click top left of text"); goto c;
-c:
-            SS.GW.pending.operation = GraphicsWindow::Pending::COMMAND;
-            SS.GW.pending.command = id;
-            SS.GW.pending.description = s;
-            SS.ScheduleShowTW();
-            InvalidateGraphics(); // repaint toolbar
-            break;
-
         case Command::CONSTRUCTION: {
             SS.UndoRemember();
             SS.GW.GroupSelection();
@@ -1060,7 +1042,7 @@ c:
             SS.GW.SplitLinesOrCurves();
             break;
 
-        default: ssassert(false, "Unexpected menu ID");
+        default: SS.GW.command_request.Menu(id); //FIXME
     }
 }
 
