@@ -1042,7 +1042,10 @@ void GraphicsWindow::MenuRequest(Command id) {
             SS.GW.SplitLinesOrCurves();
             break;
 
-        default: SS.GW.command_request.Menu(id); //FIXME
+        default: {
+            SS.GW.pending.command_c = &SS.GW.command_request;
+            SS.GW.pending.command_c->Menu(id); //FIXME
+        }
     }
 }
 

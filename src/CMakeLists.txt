@@ -139,7 +139,9 @@ set(solvespace_core_HEADERS
     sketch.h
     solvespace.h
     ui.h
+    command.h
     command_request.h
+    comment.h
     render/render.h
     render/gl2shader.h
     srf/surface.h)
@@ -147,6 +149,8 @@ set(solvespace_core_HEADERS
 set(solvespace_core_SOURCES
     bsp.cpp
     clipboard.cpp
+    command_request.cpp
+    comment.cpp
     confscreen.cpp
     constraint.cpp
     constrainteq.cpp
@@ -168,7 +172,6 @@ set(solvespace_core_SOURCES
     mesh.cpp
     modify.cpp
     mouse.cpp
-    command_request.cpp
     polyline.cpp
     polygon.cpp
     resource.cpp

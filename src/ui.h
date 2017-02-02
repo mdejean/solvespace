@@ -715,8 +715,6 @@ public:
         hEntity              normal;
         hConstraint          constraint;
 
-        const char          *description;
-
         bool                 hasSuggestion;
         Constraint::Type     suggestion;
     } pending;

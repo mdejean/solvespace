@@ -466,13 +466,13 @@ void TextWindow::Show() {
 
     // Make sure these tests agree with test used to draw indicator line on
     // main list of groups screen.
-    if(SS.GW.pending.description) {
+    if(SS.GW.pending.command_c) {
         // A pending operation (that must be completed with the mouse in
         // the graphics window) will preempt our usual display.
         HideEditControl();
         ShowHeader(false);
         Printf(false, "");
-        Printf(false, "%s", SS.GW.pending.description);
+        Printf(false, "%s", SS.GW.pending.command_c->Description());
         Printf(true, "%Fl%f%Ll(cancel operation)%E",
             &TextWindow::ScreenUnselectAll);
     } else if((gs.n > 0 || gs.constraints > 0) &&
@@ -980,8 +980,9 @@ void TextWindow::Paint() {
     SS.GW.GroupSelection();
     auto const &gs = SS.GW.gs;
     // Make sure this test agrees with test to determine which screen is drawn
-    if(!SS.GW.pending.description && gs.n == 0 && gs.constraints == 0 &&
-        shown.screen == Screen::LIST_OF_GROUPS)
+    if(!(SS.GW.pending.command_c && SS.GW.pending.command_c->Description())
+       && gs.n == 0 && gs.constraints == 0 
+       && shown.screen == Screen::LIST_OF_GROUPS)
     {
         int x = 29, y = 70 + LINE_HEIGHT;
         y -= scrollPos*(LINE_HEIGHT/2);

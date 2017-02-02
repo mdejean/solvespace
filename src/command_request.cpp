@@ -17,7 +17,7 @@ c:
             SS.GW.pending.operation = Pending::COMMAND;
             SS.GW.pending.command = id;
             SS.GW.pending.command_c = this;
-            SS.GW.pending.description = s;
+            description = s;
             SS.ScheduleShowTW();
             InvalidateGraphics(); // repaint toolbar
             break;
@@ -154,7 +154,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
                     pending.operation = Pending::DRAGGING_NEW_LINE_POINT;
                     pending.request = hr;
                     pending.point = hr.entity(2);
-                    pending.description = _("click next point of line, or press Esc");
+                    description = _("click next point of line, or press Esc");
                     SK.GetEntity(pending.point)->PointForceTo(v);
                     break;
 
@@ -194,7 +194,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
 
                     pending.operation = Pending::DRAGGING_NEW_POINT;
                     pending.point = lns[1].entity(2);
-                    pending.description = _("click to place other corner of rectangle");
+                    description = _("click to place other corner of rectangle");
                     hr = lns[0];
                     break;
                 }
@@ -212,7 +212,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
 
                     pending.operation = Pending::DRAGGING_NEW_RADIUS;
                     pending.circle = hr.entity(0);
-                    pending.description = _("click to set radius");
+                    description = _("click to set radius");
                     break;
 
                 case Command::ARC: {
@@ -235,7 +235,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
 
                     pending.operation = Pending::DRAGGING_NEW_ARC_POINT;
                     pending.point = hr.entity(3);
-                    pending.description = _("click to place point");
+                    description = _("click to place point");
                     break;
                 }
                 case Command::CUBIC:
@@ -250,7 +250,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
 
                     pending.operation = Pending::DRAGGING_NEW_CUBIC_POINT;
                     pending.point = hr.entity(4);
-                    pending.description = _("click next point of cubic, or press Esc");
+                    description = _("click next point of cubic, or press Esc");
                     break;
 
                 case Command::WORKPLANE:
@@ -287,19 +287,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
 
                     pending.operation = Pending::DRAGGING_NEW_POINT;
                     pending.point = hr.entity(2);
-                    pending.description = _("click to place bottom left of text");
-                    break;
-                }
-
-                case Command::COMMENT: {
-                    SS.GW.ClearSuper();
-                    Constraint c = {};
-                    c.group       = SS.GW.activeGroup;
-                    c.workplane   = SS.GW.ActiveWorkplane();
-                    c.type        = Constraint::Type::COMMENT;
-                    c.disp.offset = v;
-                    c.comment     = _("NEW COMMENT -- DOUBLE-CLICK TO EDIT");
-                    hc = Constraint::AddConstraint(&c);
+                    description = _("click to place bottom left of text");
                     break;
                 }
                 default: ssassert(false, "Unexpected pending menu id");
@@ -411,7 +399,7 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
             pending.operation = Pending::DRAGGING_NEW_LINE_POINT;
             pending.request = hr;
             pending.point = hr.entity(2);
-            pending.description = _("click next point of line, or press Esc");
+            description = _("click next point of line, or press Esc");
 
             break;
         }
@@ -431,4 +419,8 @@ void CommandRequest::MouseLeftDown(const Vector& v) {
     if(g != NULL) {
         g->visible = true;
     }
+}
+
+const char* CommandRequest::Description() const {
+    return description;
 }

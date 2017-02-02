@@ -1,13 +1,12 @@
-#ifndef __COMMAND_REQUEST_H
-#define __COMMAND_REQUEST_H
+#ifndef __COMMENT_H
+#define __COMMENT_H
 
 #include "command.h"
 
-class CommandRequest : public CommandBase {
+class Comment : public CommandBase {
     public:
-    const char* description;
     virtual void Menu(Command id);
-    virtual void MouseMoved(const Point2d& v, bool leftDown, bool middleDown, 
+    virtual void MouseMoved(const Point2d& v, bool leftDown, bool middleDown,
         bool rightDown, bool shiftDown, bool ctrlDown);
     virtual void MouseLeftDown(const Vector& v); //FIXME: point2d or vector? be consistent
     virtual void MouseRightUp(const Point2d& v);

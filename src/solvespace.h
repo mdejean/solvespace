@@ -283,6 +283,7 @@ enum class SolveResult : uint32_t {
 
 #include "sketch.h"
 #include "command_request.h"
+#include "comment.h"
 #include "ui.h"
 #include "expr.h"
 
